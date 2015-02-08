@@ -1,0 +1,5 @@
+rootProject.name = 'PasswordKeeper'
+
+include 'api'
+include 'app'
+

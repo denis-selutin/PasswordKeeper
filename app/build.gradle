@@ -1,0 +1,69 @@
+apply plugin: 'war'
+apply plugin: 'tomcat'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://download.java.net/maven/2' }
+        maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://repo.spring.io/libs-release' }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.gradle.api.plugins:gradle-tomcat-plugin:$tomcatPluginVersion"
+        classpath "org.springframework.build.gradle:propdeps-plugin:$springPropertiesPluginVersion"
+        classpath "org.springframework.build.gradle:spring-io-plugin:$springGrandlePluginVersion"
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://repo.spring.io/milestone/' }
+    maven { url 'http://www.hibernatespatial.org/repository' }
+    maven { url "https://repo.spring.io/libs-release" }
+}
+
+
+dependencies {
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:$tomcatVersion"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:$tomcatVersion") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
+    compile project(':api')
+
+    providedCompile "javax.servlet:javax.servlet-api:$servletApiVersion"
+    compile "jstl:jstl:${jstlVersion}"
+    compile "org.springframework:spring-webmvc:$springVersion"
+    compile "org.springframework.security:spring-security-web:$securityVersion"
+    compile "org.springframework:spring-tx:$springVersion"
+    compile "org.springframework.security:spring-security-config:$securityVersion"
+    compile "org.springframework.data:spring-data-jpa:$springDataVersion"
+    compile "org.springframework.security.oauth:spring-security-oauth2:$springOAuthVersion"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "org.slf4j:slf4j-api:$sl4jVersion"
+    compile "org.apache.commons:commons-lang3:$commonLangVersion"
+    compile "cglib:cglib:3.1"
+    runtime "org.slf4j:jcl-over-slf4j:$sl4jVersion",
+            "org.slf4j:slf4j-jdk14:$sl4jVersion"
+}
+
+
+tomcatRunWar.httpPort = 9000
+tomcatRun.httpPort = 8090
+tomcatRun.enableSSL = true
+tomcatRun.reloadable = true
+tomcatRun.stopPort = 8081
+tomcatRun.stopKey = 'stopKey'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.9'
+}
+
+tomcatRunWar.contextPath = ''
